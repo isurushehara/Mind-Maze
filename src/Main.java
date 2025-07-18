@@ -8,6 +8,14 @@ public class Main extends Action{
         Scanner input = new Scanner(System.in);
         Action player = new Action();
 
+        //SELECT A MAP
+        System.out.println("----------------------------------------------------------------");
+        System.out.println("------------------- WELCOME TO THE MIND MAX --------------------");
+        System.out.println("----------------------------------------------------------------");
+        System.out.println("|| Select a map: 1, 2");
+//        int map_no = input.nextInt();
+//        player.map_no = map_no;
+
         //INTRODUCTIONS
         System.out.println("----------------------------------------------------------------");
         System.out.println("||------------------------------------------------------------||");
