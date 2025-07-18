@@ -1,4 +1,8 @@
+import java.util.Scanner;
+
 public class Action {
+
+    Scanner input = new Scanner(System.in);
 
     //CHECK WIN OR NOT
     boolean win = false;
@@ -6,7 +10,6 @@ public class Action {
     int command_count = 0;
 
     //MAP DETAILS
-    int map_count = 2;
     //MAP 1
     int[][] map_1 = {
             {1,1,1,1,0,1,1,1,1,1},
@@ -22,7 +25,7 @@ public class Action {
 
     //MAP 2
     int [][] map_2 = {
-            {1,1,1,1,0,1,1,1,1,1},
+            {1,1,1,1,1,1,1,1,1,1},
             {1,1,1,1,1,1,1,1,1,1},
             {1,1,1,1,1,1,1,1,1,1},
             {1,1,1,1,1,1,1,1,1,1},
@@ -34,11 +37,25 @@ public class Action {
             {1,1,1,1,1,1,1,1,1,1}
     };
 
+    //MAPS
+    int  [][][] maps = {map_1,map_2};
+    int map_count = maps.length;
+
     //MAP SELECTION
+    int[][] map = map_1; // DEFAULT SELECT MAP NUMBER 01
     int map_no;
+    void mapSelect() {
+        for (int i = 0; i < 100; i++) {
+            System.out.println("* Select a map: 1, 2 *");
+            map_no = input.nextInt();
+            if(0 < map_no && map_no <= map_count ) {
+                map = maps[map_no - 1];
+                break;
+            } else
+                System.out.println("Only have " +map_count +" Maps!");
+        }
+    }
 
-
-    int[][] map;
     int row = 0, column = 4; //DEFAULT
     int position_value = map[row][column];
 
