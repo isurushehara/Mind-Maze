@@ -1,15 +1,14 @@
 package main;
 
-import maps.MazeFactory;
-import model.Maze;
+import game.GameEngine;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        Maze maze = MazeFactory.getMaze(1);
+        GameEngine engine = new GameEngine();
 
-        maze.printMaze();
+        engine.start();
 
     }
 
