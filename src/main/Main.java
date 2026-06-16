@@ -1,14 +1,41 @@
 package main;
 
-import game.GameEngine;
+import dao.UserDAO;
+import database.DBConnection;
+import model.User;
+
+import java.sql.Connection;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        GameEngine engine = new GameEngine();
+        try {
 
-        engine.start();
+            Connection connection =
+                    DBConnection.getConnection();
+
+            UserDAO dao = new UserDAO();
+
+            User user = new User();
+
+            user.setUsername("john");
+            user.setPassword("123456");
+
+            boolean success = dao.register(user);
+
+            System.out.println(success);
+
+
+            connection.close();
+
+
+
+        }
+
+        catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
