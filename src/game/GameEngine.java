@@ -6,27 +6,25 @@ import maps.MazeFactory;
 import model.Maze;
 import model.Player;
 import service.MovementService;
+import view.ConsoleView;
 
 public class GameEngine {
-
-    private Scanner scanner;
+    private ConsoleView consoleView;
     private Player player;
     private Maze maze;
     private MovementService movementService;
 
     public GameEngine() {
 
-        scanner = new Scanner(System.in);
-
+        consoleView = new ConsoleView();
         player = new Player();
-
         movementService = new MovementService();
 
     }
 
     public void start() {
 
-        showWelcome();
+        consoleView.showWelcome();
 
         createPlayer();
 
@@ -38,21 +36,10 @@ public class GameEngine {
 
     }
 
-    private void showWelcome() {
-
-        System.out.println("====================================");
-        System.out.println("      WELCOME TO MAZE GAME");
-        System.out.println("====================================");
-
-    }
-
     private void createPlayer() {
 
-        System.out.print("Enter player name: ");
-
-        String name = scanner.nextLine();
-
-        player.setName(name);
+        player.setName(
+                consoleView.readPlayerName());
 
     }
 
@@ -60,19 +47,7 @@ public class GameEngine {
 
         while (true) {
 
-            System.out.println();
-
-            System.out.println("Select Maze");
-
-            System.out.println("1. Maze 1");
-
-            System.out.println("2. Maze 2");
-
-            System.out.print("Choice : ");
-
-            int choice = scanner.nextInt();
-
-            scanner.nextLine();
+            int choice = consoleView.readMazeChoice();
 
             if (choice == 1 || choice == 2) {
 
@@ -80,11 +55,9 @@ public class GameEngine {
 
                 break;
 
-            } else {
-
-                System.out.println("Invalid maze!");
-
             }
+
+            consoleView.showError("Invalid maze!");
 
         }
 
@@ -122,7 +95,7 @@ public class GameEngine {
 
             System.out.print("\n>> ");
 
-            String command = scanner.nextLine().toLowerCase();
+            String command = consoleView.readCommand();
 
             switch (command) {
 
@@ -133,30 +106,17 @@ public class GameEngine {
 
                     if (moved) {
 
-                        System.out.println("You moved forward.");
+                        consoleView.showMessage("You moved forward.");
 
                     } else {
 
-                        System.out.println("Cannot move! Wall or boundary.");
+                        consoleView.showError("Wall detected!");
 
                     }
 
                     if (movementService.hasWon(player, maze)) {
 
-                        System.out.println();
-
-                        System.out.println("****************************");
-
-                        System.out.println("Congratulations!");
-
-                        System.out.println(player.getName());
-
-                        System.out.println("You escaped the maze!");
-
-                        System.out.println("Commands used : "
-                                + player.getCommandCount());
-
-                        System.out.println("****************************");
+                        consoleView.showWin(player);
 
                         running = false;
 
@@ -168,8 +128,9 @@ public class GameEngine {
 
                     movementService.turnLeft(player);
 
-                    System.out.println("Direction : "
-                            + player.getDirection());
+                    consoleView.showMessage(
+                            "Direction : "
+                                    + player.getDirection());
 
                     break;
 
@@ -184,7 +145,7 @@ public class GameEngine {
 
                 case "where":
 
-                    showPlayerPosition();
+                    consoleView.showPlayerInfo(player);
 
                     break;
 
@@ -192,13 +153,13 @@ public class GameEngine {
 
                     running = false;
 
-                    System.out.println("Game exited.");
+                    consoleView.showMessage("Game exited.");
 
                     break;
 
                 default:
 
-                    System.out.println("Invalid command!");
+                    consoleView.showError("Invalid command!");
 
                     System.out.println("Available commands:");
 
@@ -218,25 +179,5 @@ public class GameEngine {
 
     }
 
-    private void showPlayerPosition() {
-
-        System.out.println();
-
-        System.out.println("Player : "
-                + player.getName());
-
-        System.out.println("Row : "
-                + player.getRow());
-
-        System.out.println("Column : "
-                + player.getColumn());
-
-        System.out.println("Direction : "
-                + player.getDirection());
-
-        System.out.println("Commands : "
-                + player.getCommandCount());
-
-    }
 
 }
