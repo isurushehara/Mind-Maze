@@ -1,5 +1,6 @@
 package main;
 
+import model.Direction;
 import model.Player;
 
 public class Main {
@@ -8,13 +9,18 @@ public class Main {
 
         Player player = new Player();
 
-        player.setName("John");
+        System.out.println(player.getDirection());
 
-        System.out.println(player.getName());
+        player.setDirection(
+                player.getDirection().turnRight());
 
-        System.out.println(player.getRow());
+        System.out.println(player.getDirection());
 
-        System.out.println(player.getColumn());
+        player.setDirection(
+                player.getDirection().turnRight());
+
+        System.out.println(player.getDirection());
 
     }
+
 }
