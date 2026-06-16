@@ -1,25 +1,15 @@
 package main;
 
-import model.Direction;
-import model.Player;
+import maps.MazeFactory;
+import model.Maze;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        Player player = new Player();
+        Maze maze = MazeFactory.getMaze(1);
 
-        System.out.println(player.getDirection());
-
-        player.setDirection(
-                player.getDirection().turnRight());
-
-        System.out.println(player.getDirection());
-
-        player.setDirection(
-                player.getDirection().turnRight());
-
-        System.out.println(player.getDirection());
+        maze.printMaze();
 
     }
 
