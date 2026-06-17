@@ -1,24 +1,29 @@
 package game;
 
-import java.util.Scanner;
-
 import maps.MazeFactory;
 import model.Maze;
 import model.Player;
+import model.User;
+import service.LoginService;
 import service.MovementService;
 import view.ConsoleView;
 
 public class GameEngine {
-    private ConsoleView consoleView;
-    private Player player;
+
+    private final ConsoleView consoleView;
+    private final Player player;
     private Maze maze;
-    private MovementService movementService;
+    private final MovementService movementService;
+    private final LoginService loginService;
+
+    private User currentUser;
 
     public GameEngine() {
 
         consoleView = new ConsoleView();
         player = new Player();
         movementService = new MovementService();
+        loginService = new LoginService();
 
     }
 
@@ -26,66 +31,207 @@ public class GameEngine {
 
         consoleView.showWelcome();
 
-        createPlayer();
-
-        selectMaze();
-
-        showInstructions();
-
-        play();
+        mainMenu();
 
     }
 
-    private void createPlayer() {
+    // ===================================
+    // MAIN MENU
+    // ===================================
 
-        player.setName(
-                consoleView.readPlayerName());
+    private void mainMenu() {
 
-    }
+        boolean running = true;
 
-    private void selectMaze() {
+        while (running) {
 
-        while (true) {
+            consoleView.showMainMenu();
 
-            int choice = consoleView.readMazeChoice();
+            int choice = consoleView.readMainMenuChoice();
 
-            if (choice == 1 || choice == 2) {
+            switch (choice) {
 
-                maze = MazeFactory.getMaze(choice);
+                case 1:
 
-                break;
+                    register();
+
+                    break;
+
+                case 2:
+
+                    login();
+
+                    break;
+
+                case 3:
+
+                    consoleView.showMessage("Good Bye!");
+
+                    running = false;
+
+                    break;
+
+                default:
+
+                    consoleView.showError("Invalid choice!");
 
             }
-
-            consoleView.showError("Invalid maze!");
 
         }
 
     }
 
-    private void showInstructions() {
+    // ===================================
+    // REGISTER
+    // ===================================
 
-        System.out.println();
+    private void register() {
 
-        System.out.println("--------------------------------");
+        String username =
+                consoleView.readUsername();
 
-        System.out.println("Available Commands");
+        String password =
+                consoleView.readPassword();
 
-        System.out.println("--------------------------------");
+        boolean success =
+                loginService.register(username, password);
 
-        System.out.println("go");
+        if (success) {
 
-        System.out.println("turn left");
+            consoleView.showMessage(
+                    "Registration successful.");
 
-        System.out.println("turn right");
+        } else {
 
-        System.out.println("where");
+            consoleView.showError(
+                    "Registration failed.");
 
-        System.out.println("exit");
-
-        System.out.println("--------------------------------");
+        }
 
     }
+
+    // ===================================
+    // LOGIN
+    // ===================================
+
+    private void login() {
+
+        String username =
+                consoleView.readUsername();
+
+        String password =
+                consoleView.readPassword();
+
+        currentUser =
+                loginService.login(username, password);
+
+        if (currentUser == null) {
+
+            consoleView.showError(
+                    "Invalid username or password.");
+
+            return;
+
+        }
+
+        consoleView.showMessage(
+                "Welcome " +
+                        currentUser.getUsername());
+
+        player.setName(
+                currentUser.getUsername());
+
+        player.resetPosition();
+
+        userMenu();
+
+    }
+
+    // ===================================
+    // USER MENU
+    // ===================================
+
+    private void userMenu() {
+
+        boolean running = true;
+
+        while (running) {
+
+            consoleView.showUserMenu();
+
+            int choice =
+                    consoleView.readUserMenuChoice();
+
+            switch (choice) {
+
+                case 1:
+
+                    selectMaze();
+
+                    consoleView.showInstructions();
+
+                    play();
+
+                    break;
+
+                case 2:
+
+                    currentUser = null;
+
+                    consoleView.showMessage(
+                            "Logged out.");
+
+                    running = false;
+
+                    break;
+
+                case 3:
+
+                    System.exit(0);
+
+                    break;
+
+                default:
+
+                    consoleView.showError(
+                            "Invalid choice.");
+
+            }
+
+        }
+
+    }
+
+    // ===================================
+    // SELECT MAZE
+    // ===================================
+
+    private void selectMaze() {
+
+        while (true) {
+
+            int choice =
+                    consoleView.readMazeChoice();
+
+            if (choice == 1 || choice == 2) {
+
+                maze =
+                        MazeFactory.getMaze(choice);
+
+                break;
+
+            }
+
+            consoleView.showError(
+                    "Invalid maze.");
+
+        }
+
+    }
+
+    // ===================================
+    // GAME LOOP
+    // ===================================
 
     private void play() {
 
@@ -93,9 +239,8 @@ public class GameEngine {
 
         while (running) {
 
-            System.out.print("\n>> ");
-
-            String command = consoleView.readCommand();
+            String command =
+                    consoleView.readCommand();
 
             switch (command) {
 
@@ -106,11 +251,13 @@ public class GameEngine {
 
                     if (moved) {
 
-                        consoleView.showMessage("You moved forward.");
+                        consoleView.showMessage(
+                                "You moved forward.");
 
                     } else {
 
-                        consoleView.showError("Wall detected!");
+                        consoleView.showError(
+                                "Wall detected.");
 
                     }
 
@@ -138,8 +285,9 @@ public class GameEngine {
 
                     movementService.turnRight(player);
 
-                    System.out.println("Direction : "
-                            + player.getDirection());
+                    consoleView.showMessage(
+                            "Direction : "
+                                    + player.getDirection());
 
                     break;
 
@@ -153,31 +301,17 @@ public class GameEngine {
 
                     running = false;
 
-                    consoleView.showMessage("Game exited.");
-
                     break;
 
                 default:
 
-                    consoleView.showError("Invalid command!");
-
-                    System.out.println("Available commands:");
-
-                    System.out.println("go");
-
-                    System.out.println("turn left");
-
-                    System.out.println("turn right");
-
-                    System.out.println("where");
-
-                    System.out.println("exit");
+                    consoleView.showError(
+                            "Invalid command.");
 
             }
 
         }
 
     }
-
 
 }

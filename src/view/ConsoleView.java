@@ -9,45 +9,41 @@ public class ConsoleView {
     private final Scanner scanner;
 
     public ConsoleView() {
+
         scanner = new Scanner(System.in);
+
     }
 
-    // ------------------------------------
-    // Welcome
-    // ------------------------------------
+    // ==========================================
+    // WELCOME
+    // ==========================================
 
     public void showWelcome() {
 
-        System.out.println("=========================================");
-        System.out.println("         WELCOME TO MAZE GAME");
-        System.out.println("=========================================");
+        System.out.println("========================================");
+        System.out.println("           MAZE GAME");
+        System.out.println("========================================");
 
     }
 
-    // ------------------------------------
-    // Player Name
-    // ------------------------------------
+    // ==========================================
+    // MAIN MENU
+    // ==========================================
 
-    public String readPlayerName() {
-
-        System.out.print("Enter player name: ");
-
-        return scanner.nextLine();
-
-    }
-
-    // ------------------------------------
-    // Maze Selection
-    // ------------------------------------
-
-    public int readMazeChoice() {
+    public void showMainMenu() {
 
         System.out.println();
-        System.out.println("Select Maze");
-        System.out.println("1. Maze 1");
-        System.out.println("2. Maze 2");
+        System.out.println("========== MAIN MENU ==========");
+        System.out.println("1. Register");
+        System.out.println("2. Login");
+        System.out.println("3. Exit");
+        System.out.println("===============================");
 
-        System.out.print("Choice: ");
+    }
+
+    public int readMainMenuChoice() {
+
+        System.out.print("Choice : ");
 
         int choice = scanner.nextInt();
 
@@ -57,76 +53,148 @@ public class ConsoleView {
 
     }
 
-    // ------------------------------------
-    // Instructions
-    // ------------------------------------
+    // ==========================================
+    // USER MENU
+    // ==========================================
+
+    public void showUserMenu() {
+
+        System.out.println();
+        System.out.println("========== USER MENU ==========");
+        System.out.println("1. Start Game");
+        System.out.println("2. Logout");
+        System.out.println("3. Exit");
+        System.out.println("===============================");
+
+    }
+
+    public int readUserMenuChoice() {
+
+        System.out.print("Choice : ");
+
+        int choice = scanner.nextInt();
+
+        scanner.nextLine();
+
+        return choice;
+
+    }
+
+    // ==========================================
+    // LOGIN / REGISTER
+    // ==========================================
+
+    public String readUsername() {
+
+        System.out.print("Username : ");
+
+        return scanner.nextLine();
+
+    }
+
+    public String readPassword() {
+
+        System.out.print("Password : ");
+
+        return scanner.nextLine();
+
+    }
+
+    // ==========================================
+    // MAZE SELECTION
+    // ==========================================
+
+    public int readMazeChoice() {
+
+        System.out.println();
+        System.out.println("========== SELECT MAZE ==========");
+        System.out.println("1. Maze 1");
+        System.out.println("2. Maze 2");
+
+        System.out.print("Choice : ");
+
+        int choice = scanner.nextInt();
+
+        scanner.nextLine();
+
+        return choice;
+
+    }
+
+    // ==========================================
+    // GAME INSTRUCTIONS
+    // ==========================================
 
     public void showInstructions() {
 
         System.out.println();
-        System.out.println("-------------------------------------");
+
+        System.out.println("======================================");
+
         System.out.println("Available Commands");
-        System.out.println("-------------------------------------");
+
+        System.out.println("--------------------------------------");
+
         System.out.println("go");
+
         System.out.println("turn left");
+
         System.out.println("turn right");
+
         System.out.println("where");
+
         System.out.println("exit");
-        System.out.println("-------------------------------------");
+
+        System.out.println("======================================");
 
     }
 
-    // ------------------------------------
-    // Read Command
-    // ------------------------------------
+    // ==========================================
+    // READ COMMAND
+    // ==========================================
 
     public String readCommand() {
 
         System.out.print("\n>> ");
 
-        return scanner.nextLine().trim().toLowerCase();
+        return scanner.nextLine()
+                .trim()
+                .toLowerCase();
 
     }
 
-    // ------------------------------------
-    // Player Info
-    // ------------------------------------
+    // ==========================================
+    // PLAYER INFO
+    // ==========================================
 
     public void showPlayerInfo(Player player) {
 
         System.out.println();
 
-        System.out.println("Player : " + player.getName());
+        System.out.println("========== PLAYER ==========");
 
-        System.out.println("Row : " + player.getRow());
+        System.out.println("Name : "
+                + player.getName());
 
-        System.out.println("Column : " + player.getColumn());
+        System.out.println("Row : "
+                + player.getRow());
 
-        System.out.println("Direction : " + player.getDirection());
+        System.out.println("Column : "
+                + player.getColumn());
 
-        System.out.println("Commands : " + player.getCommandCount());
+        System.out.println("Direction : "
+                + player.getDirection());
 
-    }
+        System.out.println("Commands : "
+                + player.getCommandCount());
 
-    // ------------------------------------
-    // Messages
-    // ------------------------------------
-
-    public void showMessage(String message) {
-
-        System.out.println(message);
-
-    }
-
-    public void showError(String message) {
-
-        System.out.println("Error: " + message);
+        System.out.println("============================");
 
     }
 
-    // ------------------------------------
-    // Win Screen
-    // ------------------------------------
+    // ==========================================
+    // WIN
+    // ==========================================
 
     public void showWin(Player player) {
 
@@ -147,4 +215,27 @@ public class ConsoleView {
 
     }
 
+    // ==========================================
+    // MESSAGE
+    // ==========================================
+
+    public void showMessage(String message) {
+
+        System.out.println(message);
+
+    }
+
+    // ==========================================
+    // ERROR
+    // ==========================================
+
+    public void showError(String message) {
+
+        System.out.println();
+
+        System.out.println("ERROR : " + message);
+
+    }
+
 }
+
