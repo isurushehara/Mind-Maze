@@ -1,80 +1,137 @@
 
-# 🧠 Mind Maze - Java Text-Based Maze Game
+# Mind Maze - Java Console Maze Game (v2)
 
-Welcome to **Mind Maze**, a simple yet engaging Java-based text adventure game where your mission is to escape a 10x10 maze (level 1) using directional commands. It’s a test of memory, logic, and spatial awareness.
+Mind Maze is a text-based maze game built in Java using a layered structure (view, service, DAO, model) with MySQL persistence for users and scores.
 
-## 🎮 Game Description
+This version adds:
+- user registration and login
+- score saving to database
+- multiple maze options
+- per-user score history
 
-You are dropped at the entrance of a maze (eg: coordinates x:5, y:1). Your task is to escape by reaching the goal at **Scape Door** [eg: (x:5, y:10)], avoiding walls and finding the correct path using textual commands.
+## Features
 
-The maze is internally represented as a 10x10 grid where:
-- `1` represents a **wall**
-- `0` represents a **walkable path**
+- Console menu system (main menu + user menu)
+- Authentication:
+   - register new users
+   - login with username and password
+   - SHA-256 password hashing
+- Maze gameplay commands:
+   - `go`
+   - `turn left`
+   - `turn right`
+   - `where`
+   - `exit`
+- Score tracking:
+   - number of commands used is recorded on win
+   - score records stored in MySQL
 
-You will interact with the game using text commands to **move** and **turn** your character until you reach the exit.
+## Tech Stack
 
-## 🧾 How to Play
+- Java (JDK 8+)
+- MySQL
+- JDBC (MySQL Connector/J)
 
-### ✅ Available Commands:
-- `go` – Move forward in the current direction
-- `turn right` – Turn 90° to the right
-- `turn left` – Turn 90° to the left
-- `where` – Show your current position and direction
-- `exit` – Exit the game
-
-### 🎯 Winning Condition:
-Reach the goal cell at **(x:5, y:10)**. The game ends with a congratulatory message and the number of commands you used.
-
-## 🚀 Getting Started
-
-### Prerequisites:
-- Java JDK 8 or higher
-- Any IDE (e.g., IntelliJ, VS Code) or terminal with Java compiler
-
-### 📦 Run the Game
-
-1. Clone or download this repository
-2. Compile the Java files:
-   ```bash
-   javac Main.java Action.java
-   ```
-3. Run the game:
-   ```bash
-   java Main
-   ```
-## 🗺️ Maze Level 1 Map Preview
-
-Here's a visual of the internal maze grid (`1 = wall`, `0 = path`):
+## Project Structure
 
 ```
-1 1 1 1 0 1 1 1 1 1  
-1 0 1 0 0 0 1 0 0 1  
-1 0 1 0 1 0 1 1 0 1  
-1 0 0 0 1 1 1 0 0 1  
-1 1 1 0 0 0 0 0 1 1  
-1 0 0 1 1 1 1 0 1 1  
-1 0 0 1 0 0 0 0 1 1  
-1 0 1 1 0 1 1 0 1 1  
-1 0 0 0 0 0 0 0 0 1  
-1 1 1 1 0 1 1 1 1 1  
+src/
+   dao/
+      PlayerDAO.java
+      ScoreDAO.java
+      UserDAO.java
+   database/
+      DBConnection.java
+   game/
+      GameEngine.java
+   main/
+      Main.java
+   maps/
+      Maze1.java
+      Maze2.java
+      MazeFactory.java
+   model/
+      Direction.java
+      Map.java
+      Maze.java
+      Player.java
+      Score.java
+      User.java
+   service/
+      GameService.java
+      LoginService.java
+      MovementService.java
+      ScoreService.java
+   util/
+      Input.java
+      PasswordUtil.java
+   view/
+      ConsoleView.java
 ```
 
-## 📂 Project Structure
+## Database Setup
 
+Create a MySQL database named `maze_game` and run:
+
+```sql
+CREATE DATABASE IF NOT EXISTS maze_game;
+USE maze_game;
+
+CREATE TABLE IF NOT EXISTS users (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      username VARCHAR(100) NOT NULL UNIQUE,
+      password VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS scores (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      user_id INT NOT NULL,
+      maze_number INT NOT NULL,
+      commands INT NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users(id)
+);
 ```
-.
-├── Main.java       # Main game loop
-└── Action.java     # Player actions and maze logic
+
+Default database credentials currently used in code:
+- URL: `jdbc:mysql://localhost:3306/maze_game`
+- USER: `your_username`
+- PASSWORD: `your_password`
+
+Update these in `src/database/DBConnection.java` if needed.
+
+## Build and Run
+
+From the project root:
+
+1. Compile:
+
+```bash
+javac -d out -sourcepath src src/main/Main.java
 ```
 
-## ✍️ Author
+2. Run:
 
-- Developed by Isuru Shehara.
+```bash
+java -cp out main.Main
+```
 
-## 📄 License
+If you get JDBC driver errors, add MySQL Connector/J to your classpath.
 
-This project is open-source and available under the [MIT License](LICENSE).
+## Gameplay Notes
 
----
+- Player starts at row `0`, column `4`, facing `NORTH`.
+- Maze selection is available after login:
+   - Maze 1 exit at `(9, 4)`
+   - Maze 2 exit at `(9, 5)`
+- Each successful move or turn increases command count.
+- Winning saves score for the logged-in user.
 
-Have fun escaping the Mind Maze!
+## Known Limitations
+
+- `maze_number` is currently saved as `1` after a win, even if Maze 2 is selected.
+- Input handling for menu choices expects numeric input.
+
+## Author
+
+Developed by Isuru Shehara.
