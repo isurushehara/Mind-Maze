@@ -1,7 +1,9 @@
 package view;
 
 import model.Player;
+import model.Score;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class ConsoleView {
@@ -62,8 +64,9 @@ public class ConsoleView {
         System.out.println();
         System.out.println("========== USER MENU ==========");
         System.out.println("1. Start Game");
-        System.out.println("2. Logout");
-        System.out.println("3. Exit");
+        System.out.println("2. My Scores");
+        System.out.println("3. Logout");
+        System.out.println("4. Exit");
         System.out.println("===============================");
 
     }
@@ -97,6 +100,37 @@ public class ConsoleView {
         System.out.print("Password : ");
 
         return scanner.nextLine();
+
+    }
+
+// ==========================================
+// SHOW SCORES
+// ==========================================
+
+    public void showScores(List<Score> scores) {
+
+        System.out.println();
+
+        System.out.println("========== MY SCORES ==========");
+
+        if (scores.isEmpty()) {
+
+            System.out.println("No scores found.");
+
+            return;
+
+        }
+
+        for (Score score : scores) {
+
+            System.out.println(
+                    "Maze : " + score.getMazeNumber()
+                            + " | Commands : " + score.getCommands()
+            );
+
+        }
+
+        System.out.println("===============================");
 
     }
 

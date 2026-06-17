@@ -3,9 +3,11 @@ package game;
 import maps.MazeFactory;
 import model.Maze;
 import model.Player;
+import model.Score;
 import model.User;
 import service.LoginService;
 import service.MovementService;
+import service.ScoreService;
 import view.ConsoleView;
 
 public class GameEngine {
@@ -15,6 +17,7 @@ public class GameEngine {
     private Maze maze;
     private final MovementService movementService;
     private final LoginService loginService;
+    private final ScoreService scoreService;
 
     private User currentUser;
 
@@ -24,6 +27,7 @@ public class GameEngine {
         player = new Player();
         movementService = new MovementService();
         loginService = new LoginService();
+        scoreService = new ScoreService();
 
     }
 
@@ -176,6 +180,14 @@ public class GameEngine {
 
                 case 2:
 
+                    consoleView.showScores(
+                            scoreService.getScoresByUser(
+                                    currentUser.getId()));
+
+                    break;
+
+                case 3:
+
                     currentUser = null;
 
                     consoleView.showMessage(
@@ -185,7 +197,7 @@ public class GameEngine {
 
                     break;
 
-                case 3:
+                case 4:
 
                     System.exit(0);
 
@@ -263,7 +275,31 @@ public class GameEngine {
 
                     if (movementService.hasWon(player, maze)) {
 
+                        Score score = new Score();
+
+                        score.setUserId(currentUser.getId());
+
+                        score.setMazeNumber(1); // update later if needed
+
+                        score.setCommands(player.getCommandCount());
+
+                        boolean saved =
+                                scoreService.saveScore(score);
+
                         consoleView.showWin(player);
+
+                        if(saved){
+
+                            consoleView.showMessage(
+                                    "Score saved successfully.");
+
+                        }
+                        else{
+
+                            consoleView.showError(
+                                    "Failed to save score.");
+
+                        }
 
                         running = false;
 
